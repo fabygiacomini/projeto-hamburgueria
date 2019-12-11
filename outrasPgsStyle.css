@@ -1,0 +1,17 @@
+body {
+  text-align: center;
+  font-family: 'Roboto', sans-serif;
+  font-size: 18px;
+  background-color: rgb(59, 41, 18);
+  color: white;
+  background-image: url("background.png");  
+}
+
+div.result {
+  background-color: white;
+  color: rgb(80, 44, 14);
+  width: 800px;
+  margin: 0 auto;
+  border-radius: 10px;
+  box-shadow: 5px 5px 10px black;
+}
