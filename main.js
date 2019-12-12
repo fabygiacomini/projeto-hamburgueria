@@ -1,31 +1,11 @@
-const produtos = {
-  bbq: {
-    nome: 'BBQ Bacon Burger',
-    preco: 37.90
-  },
-  salad: {
-    nome: 'Cheese Salad Burger',
-    preco: 32.90
-  },
-  xburger: {
-    nome: 'Cheese Burger',
-    preco: 27.90
-  },
-  veggie: {
-    nome: 'Veggie Burger',
-    preco: 33.90
-  }
-}
-
+let carrinho = [];
 
 window.onload = () => {
-  console.log('finalizei o carregamento')
   fetch('funcoes.php?operacao=mostrarTudo')
   .then((respostaInicial) => {
     return respostaInicial.json()
   })
   .then((respostaConvertida) => {
-    console.log(respostaConvertida)
     let htmlProdutos = ''
     respostaConvertida.forEach((produto) => {
       let novoProdutoHtml = 
@@ -41,7 +21,11 @@ window.onload = () => {
           </p>
         </p>
 
-        <input data-id="${produto.id_prod}" type="button" value="Pedir" class="btnPedido" id="bbq">
+        <input 
+          data-id="${produto.id_prod}"
+          data-nome="${produto.nome}"
+          data-preco=${produto.preco}
+        type="button" value="Pedir" class="btnPedido" id="bbq">
       </div>`;
       htmlProdutos = htmlProdutos + novoProdutoHtml
     })
@@ -49,40 +33,93 @@ window.onload = () => {
     const container = document.getElementById('content')
     container.innerHTML = htmlProdutos
 
-    adicionaAcaoBotaoPedir()
+    adicionaAcaoBotaoPedir();
   
   })
 }
 
-function adicionaAcaoBotaoPedir () {
+// ação de clicar vai inserir um novo pedido no banco (chama funcao insereNovoPedido())
+const efetuarPedido = document.querySelector('#efetuarPedido');
+efetuarPedido.addEventListener('click', (event) => {
+  insereNovoPedido(carrinho);
+});
+
+
+
+/////////////
+// FUNCOES //
+/////////////
+
+/**
+ * Ao clicar no botão, cria item html mostrando nome/preco do item selecionado, cria novo obj para esse item e adiciona no carrinho através do push(), bem como libera o botão para confirmar o pedido
+ * 
+ * @return {undefined}
+ */
+function adicionaAcaoBotaoPedir () { // botao de cada lanche
+  
   const btnEscolha = document.querySelectorAll('.btnPedido')
   btnEscolha.forEach((button) => {
-    button.addEventListener("click",(e) => {
-      let burger = e.target.id // retorna bbq OK!
-      this.burger;
+    button.addEventListener("click", (e) => {
+      let burger = e.target.dataset; // retorna um array com os atributos data-
 
-      for (i in produtos) {
-        if (i == burger) {
-          let escolhaPedido = document.getElementById('escolhaPedido') 
-          let precoB = document.getElementById('valorPedido')
-          console.log(produtos[burger]['nome'])
+      // monta o html que irá ser adicionado no final da pagina com as informacoes do burgers
+      const htmlNovoItem = `
+        <p id="escolhaPedido">${burger.nome}</p>
+        <p id="valorPedido">${burger.preco}</p>`;
+      let carrinhoDeItens = document.querySelector('.result');
+      carrinhoDeItens.innerHTML += htmlNovoItem;
+      
+      // Cria um objeto com as informacoes do burger sendo adicionado
+      const novoItemAdicionado = {
+        id_prod: burger.id,
+        nome: burger.nome,
+        preco: burger.preco,
+        quantidade: 1, // valor fixo para exemplificar
+      };
 
-          // window.location = "pedido.html"
-          window.location = '#revisao'
+      // insere o burger clicado no array carrinho
+      carrinho.push(novoItemAdicionado);
 
-          // Por Na tela a escolha
-          const revisao = document.querySelector('#revisao')
-          escolhaPedido.innerHTML = `Burguer escolhido: ${produtos[burger]['nome']}`
-          precoB.innerHTML = `Valor: ${produtos[burger]['preco']}`
-          revisao.appendChild(escolhaPedido)
-          revisao.appendChild(precoB)
-          // aparecer botão de efetuar pedido
-          const btnEfetuarPedido = document.getElementById('efetuarPedido')
-          btnEfetuarPedido.style.display = 'block';
+      window.location = '#revisao'
+      
 
-          localStorage.setItem(produto[burger]['nome'], produto[burger]['preco'])
-        }
+      if (carrinho.length > 0) {
+        const efetuarPedido = document.querySelector('#efetuarPedido');
+        efetuarPedido.style.display = 'block';
       }
     })
   })
 }
+
+/**
+ * Envia uma requisicao para criar um novo pedido no banco de dados
+ * @param {array} carrinho carrinho de compras com os lanches
+ * @param {int} idCliente id do cliente atualmente comprando
+ * 
+ * @return {undefined}
+ */
+function insereNovoPedido(carrinho, idCliente = 1) { // cliente exmplo criado manualmente no banco de dados
+
+  const itensDoPedidoJSON = JSON.stringify(carrinho);
+
+  fetch("funcoes.php?operacao=novoPedido&id_cli=" + idCliente, {
+    method: "POST",
+    body: itensDoPedidoJSON
+  })
+  .then((respostaSemCoversao) => respostaSemCoversao.json())
+  .then((respostaConvertida) => {
+    alert(respostaConvertida.mensagem);
+    const idDoPedidoNovo = respostaConvertida.id_pedido;
+
+
+    localStorage.setItem('cliente_atual_id', idCliente);
+    localStorage.setItem('cliente_atual_pedido', idDoPedidoNovo);
+    
+    window.location = 'resumoPedido.html'
+
+  })
+  .catch((erro) => {
+  })
+}
+
+

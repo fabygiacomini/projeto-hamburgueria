@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <link rel="stylesheet" href="outrasPgsStyle.css">
+  <title>Histórico de Pedidos</title>
+</head>
+<body>
+  <h2>Histórico de Pedidos</h2>
+  <div class="result">
+    <table>
+      <thead>
+        <tr>
+          <th>Número do Pedido</th>
+          <th>Nome do Produto</th>
+          <th>Nome do Cliente</th>
+          <th>Data</th>
+          <th>Total</th>
+        </tr>
+      </thead>
+      <tbody id="tabelaHistorico">
+
+      </tbody>
+    </table>
+  <div>
+      <label for="filtroData">Filtro:</label>
+      <input type="date" value="" id="filtroData">
+      <input type="button" value="Filtrar" id="filtrar"> 
+      <input type="button" value="Voltar" id="mostrarTudo">
+    </div>
+  </div>
+  <script src="historico.js"></script>
+</body>
+</html>

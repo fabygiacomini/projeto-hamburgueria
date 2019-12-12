@@ -10,18 +10,24 @@
 </head>
 <body>
   <h1>Resumo do Pedido</h1>
-  <p>Pedido realizado com sucesso!</p>
+  <p></p>
   <br>
   <div class="result">
-    <h3>Detalhes do Pedido:</h3>
-    <p id="detail"></p>
+    <div id="idPedido"></div>
+    <div id="resumo">
+      <table>
+        <thead>
+          <th>#</th>
+          <th>Burger</th>
+          <th>Preço</th>
+        </thead>
+        <tbody id="dadosPedido">
 
-    <input type="button" value="Alterar"> <!-- Voltar à tela de Pedido -->
+        </tbody>
+      </table>
+    </div>
   </div>
   
-  <script>
-  let pedidoFinal = localStorage.getItem(produto[burger]['nome'], produto[burger]['preco'])
-  console.log(pedidoFinal)
-  </script>
+  <script src="resumoPedido.js"></script>
 </body>
 </html>

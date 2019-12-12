@@ -1,15 +1,10 @@
 <?php
 
-$operacao = $_GET; // guarda em formato de array os parametros que foram enviados na url
-// $_GET['operacao'] = 'mostrarTudo'; ->> isso equivale ao $_GET da linha superior e está armazenado em $operacao (como um array)
-$parametroDoCorpoDaUrl = $_POST; // guarda em formato de array os parametros que foram enviados no corpo da requisicao post
-// var_dump($parametroDoCorpoDaUrl);
-// echo '<pre>';
-// var_dump($operacao);
-// echo json_encode($teste, true);
-
-
-
+/**
+ * Cria a conexão com o banco de dados
+ * 
+ * @return PDO instância de conexão ao banco de dados
+ */
 function criaConexao() 
 {
   $user = 'root';
@@ -28,6 +23,74 @@ function criaConexao()
 }
 
 
+/**
+ * Recupera todos os pedidos já feitos (histórico)
+ * @return array 
+ */
+function recuperaPedidos() // historico
+{
+  $conexao = criaConexao();
+  $consulta = $conexao->prepare(
+    "SELECT c.nome AS nomeCliente, p.nome AS nomeProd, i.quantidade, ped.*, DATE_FORMAT(ped.data, \"%d-%m-%Y\") AS dataFormatada
+     FROM 
+      cliente c
+      JOIN
+      pedido ped ON c.id_cli = ped.id_cli
+      JOIN
+      itens i ON ped.id_pedido = i.id_pedido
+      JOIN
+      produto p ON i.id_prod = p.id_prod;"
+  );
+  $consulta->execute();
+  return $consulta->fetchAll(PDO::FETCH_ASSOC);
+}
+
+
+/**
+ * Insere o pedido realizado no banco de dados
+ * @param array $itensDoPedido itens do pedido transferidos do js
+ * @param int $idDoCliente id do cliente atualmente comprando
+ * @return array mensagem de sucesso ou falha
+ */
+function insereNovoPedido($itensDoPedido, $idCliente)
+{
+
+  try {
+    $conexao = criaConexao();
+
+    $totalDoPedido = 0;
+
+    foreach ($itensDoPedido as $item) {
+      $totalDoPedido += $item['preco'] * $item['quantidade'];
+    }
+
+    $criaPedido = $conexao->prepare("INSERT INTO pedido (id_cli, total) VALUES ($idCliente, $totalDoPedido)");
+    $criaPedido->execute();
+  
+    $idDoNovoPedidoInserido = $conexao->lastInsertId();
+  
+    // registra os itens do pedido na tabela itens bd
+    foreach ($itensDoPedido as $item) {
+      $sqlDeInsercaoNaTabelaItens = "INSERT INTO itens (id_pedido, id_prod, quantidade) 
+        VALUES ($idDoNovoPedidoInserido, " . $item['id_prod'] . ", " . $item['quantidade'] . ")";
+
+      $criaRegistroEmItens = $conexao->prepare($sqlDeInsercaoNaTabelaItens);
+      $criaRegistroEmItens->execute();
+    }
+  } catch(Exception $e) {
+    return ['mensagem' => 'houve uma falha ao salvar: ' . $e->getMessage()];
+  }
+
+  return [
+    'mensagem' => 'Pedido salvo com sucesso!',
+    'id_pedido' => $idDoNovoPedidoInserido,
+  ];
+}
+
+/**
+ * mostra todos os produtos disponíveis para a tela inicial
+ * @return array
+ */
 function recuperaProdutos() 
 {
   $conexao = criaConexao();
@@ -37,9 +100,94 @@ function recuperaProdutos()
   return $consulta->fetchAll(PDO::FETCH_ASSOC);
 }
 
-// var_dump(recuperaProdutos());
+/**
+ * Pega os dados do pedido atual
+ * @param int $idPedido id do pedido
+ * @return array
+ */
+function acompanharPedido($idPedido)
+{
+  $conexao = criaConexao();
+  $consulta = $conexao->prepare(
+    "SELECT ped.id_pedido, c.nome, p.nome, i.id_item, p.preco, ped.status
+    FROM 
+      cliente c
+      JOIN
+      pedido ped ON c.id_cli = ped.id_cli
+      JOIN
+      itens i ON ped.id_pedido = i.id_pedido
+      JOIN
+      produto p ON i.id_prod = p.id_prod
+      WHERE ped.id_pedido = $idPedido"
+  );
+  $consulta->execute();
+  return $consulta->fetchAll(PDO::FETCH_ASSOC); 
+}
 
+
+/**
+ * Filtra os pedidos que foram realizados em uma determinada data
+ * @param string $dataBuscada data informada no formato 'yyyy-mm-dd'
+ * @return array
+ */
+function pedidosPorData($dataBuscada)
+{
+  $conexao = criaConexao();
+  $consultaData = 
+    "SELECT c.nome AS nomeCliente, p.nome AS nomeProd, i.quantidade, ped.*, DATE_FORMAT(ped.data, \"%d-%m-%Y\") AS dataFormatada
+    FROM 
+      cliente c
+      JOIN
+      pedido ped ON c.id_cli = ped.id_cli
+      JOIN
+      itens i ON ped.id_pedido = i.id_pedido
+      JOIN
+      produto p ON i.id_prod = p.id_prod
+    WHERE ped.data LIKE \"%$dataBuscada%\"";
+
+  $consulta = $conexao->prepare($consultaData);
+  $consulta->execute();
+  return $consulta->fetchAll(PDO::FETCH_ASSOC);
+}
+
+
+
+$_POST = file_get_contents('php://input');
+$operacao = $_GET;
+$parametroDoCorpoDaUrl = $_POST; 
+
+
+// VERIFICACOES: verifica qual operacao foi passada pelo javascript através do parametro na URL
+// para definir o que vai fazer
 if ($operacao['operacao'] == 'mostrarTudo') {
   $resultado = recuperaProdutos();
+  echo json_encode($resultado);
+}
+
+
+if ($operacao['operacao'] == 'novoPedido') {
+  $informacoesDosItens = json_decode($_POST, true);
+  $idDoCliente = $_GET['id_cli'];
+  $resultado = insereNovoPedido($informacoesDosItens, $idDoCliente);
+  echo json_encode($resultado);
+}
+
+
+if ($operacao['operacao'] == 'listarTodosPedidos') {  // historico
+  $resultado = recuperaPedidos();
+  echo json_encode($resultado);
+}
+
+
+if ($operacao['operacao'] == 'acompanharPedido') {
+  $idDoPedido = $_GET['idPedido'];
+  $resultado = acompanharPedido($idDoPedido); 
+  echo json_encode($resultado);
+}
+
+
+if ($operacao['operacao'] == 'filtrar') {
+  $dataBuscada = $_GET['dataFormatada'];
+  $resultado = pedidosPorData($dataBuscada); 
   echo json_encode($resultado);
 }
