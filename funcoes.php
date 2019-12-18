@@ -151,10 +151,39 @@ function pedidosPorData($dataBuscada)
 }
 
 
+function cadastrarNovoCliente($dadosDoForm)
+{
 
-$_POST = file_get_contents('php://input');
+  try {
+
+    $conexao = criaConexao();
+    $sqlInsercaoDdeNovoCliente = "INSERT INTO cliente (nome, endereco, cidade, telefone, email, senha) VALUES (:nome, :endereco, :cidade, :telefone, :email, :senha)";
+    // OU
+    // $sqlInsercaoDdeNovoCliente = "INSERT INTO cliente (nome, endereco, cidade, telefone, email, senha) VALUES (" . $dadosDoForm['nome'] . "," . $dadosDoForm['endereco'] . "," . $dadosDoForm['cidade'] . "," . $dadosDoForm['telefone'] . ","  . $dadosDoForm['email'] . "," . $dadosDoForm['senha'] . ")";
+
+    $cadastrarCliente = $conexao->prepare($sqlInsercaoDdeNovoCliente);
+    $cadastrarCliente->bindParam(':nome', $dadosDoForm['nome'], PDO::PARAM_STR);
+    $cadastrarCliente->bindParam(':endereco', $dadosDoForm['endereco'], PDO::PARAM_STR);
+    $cadastrarCliente->bindParam(':cidade', $dadosDoForm['cidade'], PDO::PARAM_STR);
+    $cadastrarCliente->bindParam(':telefone', $dadosDoForm['telefone'], PDO::PARAM_STR);
+    $cadastrarCliente->bindParam(':email', $dadosDoForm['email'], PDO::PARAM_STR);
+    $cadastrarCliente->bindParam(':senha', $dadosDoForm['senha'], PDO::PARAM_STR);
+    $cadastrarCliente->execute();
+
+  } catch(Exception $e) {
+    return ['mensagem' => 'Houve uma falha ao cadastrar cliente: ' . $e->getMessage()];
+  }
+
+  return [
+    'mensagem' => 'Cliente cadastrado com sucesso!',
+  ];
+}
+
+
+
+$postJson = file_get_contents('php://input');
 $operacao = $_GET;
-$parametroDoCorpoDaUrl = $_POST; 
+$parametroDoCorpoDaUrl = $postJson; 
 
 
 // VERIFICACOES: verifica qual operacao foi passada pelo javascript através do parametro na URL
@@ -166,7 +195,7 @@ if ($operacao['operacao'] == 'mostrarTudo') {
 
 
 if ($operacao['operacao'] == 'novoPedido') {
-  $informacoesDosItens = json_decode($_POST, true);
+  $informacoesDosItens = json_decode($postJson, true);
   $idDoCliente = $_GET['id_cli'];
   $resultado = insereNovoPedido($informacoesDosItens, $idDoCliente);
   echo json_encode($resultado);
@@ -189,5 +218,11 @@ if ($operacao['operacao'] == 'acompanharPedido') {
 if ($operacao['operacao'] == 'filtrar') {
   $dataBuscada = $_GET['dataFormatada'];
   $resultado = pedidosPorData($dataBuscada); 
+  echo json_encode($resultado);
+}
+
+if ($operacao['operacao'] == 'cadastrarClientes') {
+  $dadosDoForm = $_POST;
+  $resultado = cadastrarNovoCliente($dadosDoForm);
   echo json_encode($resultado);
 }

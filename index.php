@@ -15,6 +15,7 @@
     <nav>
       <span><a href="#content">MENU</a></span>
       <span><a href="historico.html">HISTÓRICO DE PEDIDOS</a></span>
+      <span><a href="cadastro.html">CADASTRO</a></span>
       <span><a href="#localizacao">LOCALIZAÇÃO</a></span>
       <!-- <span><a href="#">LOGIN</a></span> -->
 

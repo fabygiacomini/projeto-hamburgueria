@@ -98,7 +98,7 @@ function adicionaAcaoBotaoPedir () { // botao de cada lanche
  * 
  * @return {undefined}
  */
-function insereNovoPedido(carrinho, idCliente = 1) { // cliente exmplo criado manualmente no banco de dados
+function insereNovoPedido(carrinho, idCliente = 1) { // cliente exemplo criado manualmente no banco de dados
 
   const itensDoPedidoJSON = JSON.stringify(carrinho);
 

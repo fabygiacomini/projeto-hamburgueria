@@ -31,3 +31,34 @@ div#resPed {
   width: 600px;
   margin: 0 auto;
 }
+
+
+.inputcadastro {
+  width: 200px;
+}
+
+.formContainer {
+  background-color: white;
+  color: rgb(80, 44, 14);
+  border-radius: 10px;
+  box-shadow: 5px 5px 10px black;
+  width: 600px;
+  margin: 0 auto;
+  clear: both;
+}
+
+.formContainer input {
+  width: 90%;
+  clear: both;
+  margin: 5px;
+}
+
+.formContainer #btn-cadastro {
+  background-color: rgb(146, 98, 58);
+  border-radius: 3px;
+  height: 30px;
+  width: 100px;
+  margin: 10px;
+  color: antiquewhite;
+  font-size: 15px;
+}
