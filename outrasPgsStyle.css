@@ -10,7 +10,7 @@ body {
 div.result {
   background-color: white;
   color: rgb(80, 44, 14);
-  width: 600px;
+  width: 700px;
   margin: 0 auto;
   border-radius: 10px;
   box-shadow: 5px 5px 10px black;
@@ -19,11 +19,11 @@ div.result {
 div#tabelaHistorico {
   background-color: white;
   color: rgb(80, 44, 14);
-  width: 800px;
+  width: 900px;
   margin: 0 auto;
   border-radius: 10px;
   box-shadow: 5px 5px 10px black;
-  font-size: 14px;
+  font-size: 13px;
   text-align: center;
 }
 
@@ -31,7 +31,6 @@ div#resPed {
   width: 600px;
   margin: 0 auto;
 }
-
 
 .inputcadastro {
   width: 200px;
@@ -61,4 +60,30 @@ div#resPed {
   margin: 10px;
   color: antiquewhite;
   font-size: 15px;
+}
+
+#tabelaClientes {
+  display: flexbox;
+  justify-content: space-evenly;
+  background-color: white;
+  color: rgb(80, 44, 14);
+  width: 600px;
+  margin: 5px auto;
+  font-size: 12px;
+  text-align: left;
+}
+
+table {
+  width: 100%;
+}
+
+th, td {
+  height: 50px;
+  padding: 5px;
+  text-align: left;
+  border-bottom: 1px solid #ddd;
+}
+
+#sectionDelete {
+padding: 7px;
 }

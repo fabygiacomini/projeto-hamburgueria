@@ -11,7 +11,9 @@
 <body>
   <header>
     <!-- logo da hamburgueria e menu -->
-    <img src="logoprov.png" alt="logo" id="logo">
+    <div>
+      <img src="logo.png" alt="logo" id="logo">
+    </div>
     <nav>
       <span><a href="#content">MENU</a></span>
       <span><a href="historico.html">HISTÓRICO DE PEDIDOS</a></span>

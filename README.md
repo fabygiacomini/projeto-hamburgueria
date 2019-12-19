@@ -11,6 +11,9 @@ O sistema desenvolvido tem as seguintes funcionalidades:
 - detalhes do pedido realizado;
 - histórico de todos os pedidos já feitos;
 - filtro por data do histórico dos pedidos já feitos.
+- realiza cadastro de clientes;
+- lista todos os clientes cadastrados (sem reload);
+- deleta clientes cadastrados (sem reload);
 
 ## Tecnologias Utilizadas
 - JavaScript

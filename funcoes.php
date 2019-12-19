@@ -151,6 +151,11 @@ function pedidosPorData($dataBuscada)
 }
 
 
+/**
+ * Cadastra um cliente no banco de dados
+ * @param array $dadosDoFormdados inseridos no formulário de cadastro
+ * @return array mensagem de sucesso ou falha
+ */
 function cadastrarNovoCliente($dadosDoForm)
 {
 
@@ -162,6 +167,7 @@ function cadastrarNovoCliente($dadosDoForm)
     // $sqlInsercaoDdeNovoCliente = "INSERT INTO cliente (nome, endereco, cidade, telefone, email, senha) VALUES (" . $dadosDoForm['nome'] . "," . $dadosDoForm['endereco'] . "," . $dadosDoForm['cidade'] . "," . $dadosDoForm['telefone'] . ","  . $dadosDoForm['email'] . "," . $dadosDoForm['senha'] . ")";
 
     $cadastrarCliente = $conexao->prepare($sqlInsercaoDdeNovoCliente);
+
     $cadastrarCliente->bindParam(':nome', $dadosDoForm['nome'], PDO::PARAM_STR);
     $cadastrarCliente->bindParam(':endereco', $dadosDoForm['endereco'], PDO::PARAM_STR);
     $cadastrarCliente->bindParam(':cidade', $dadosDoForm['cidade'], PDO::PARAM_STR);
@@ -179,6 +185,39 @@ function cadastrarNovoCliente($dadosDoForm)
   ];
 }
 
+/**
+ * Recupera todos os clientes já cadastrados
+ * @return array
+ */
+function recuperaClientes()
+{
+  $conexao = criaConexao();
+  $consulta = $conexao->prepare("SELECT * FROM cliente");
+  $consulta->execute();
+  return $consulta->fetchAll(PDO::FETCH_ASSOC);
+}
+
+
+/**
+ * Deleta cliente cadastrado do banco
+ * @param integer $idClienteADeletar número de identificação do cliente a ter seu cadastro deletado
+ * @return array mensagem de sucesso ou falha
+ */
+function deletarCliente ($idClienteADeletar)
+{
+  try {
+    $conexao = criaConexao();
+    $deletaCliente = $conexao->prepare("DELETE FROM cliente WHERE id_cli = $idClienteADeletar;");
+    $deletaCliente->execute();
+  } catch(Exception $e) {
+    return ['mensagem' => 'Houve uma falha ao deletar cliente: ' . $e->getMessage()];
+  }
+
+  return [
+    'mensagem' => 'Cliente removido com sucesso!',
+  ]; 
+}
+
 
 
 $postJson = file_get_contents('php://input');
@@ -188,6 +227,7 @@ $parametroDoCorpoDaUrl = $postJson;
 
 // VERIFICACOES: verifica qual operacao foi passada pelo javascript através do parametro na URL
 // para definir o que vai fazer
+
 if ($operacao['operacao'] == 'mostrarTudo') {
   $resultado = recuperaProdutos();
   echo json_encode($resultado);
@@ -224,5 +264,16 @@ if ($operacao['operacao'] == 'filtrar') {
 if ($operacao['operacao'] == 'cadastrarClientes') {
   $dadosDoForm = $_POST;
   $resultado = cadastrarNovoCliente($dadosDoForm);
+  echo json_encode($resultado);
+}
+
+if ($operacao['operacao'] == 'listarClientes') {
+  $resultado = recuperaClientes();
+  echo json_encode($resultado);
+}
+
+if ($operacao['operacao'] == 'deletarCliente') {
+  $idClienteADeletar = $_GET['id_cli'];
+  $resultado = deletarCliente($idClienteADeletar);
   echo json_encode($resultado);
 }

@@ -1,5 +1,6 @@
 let carrinho = [];
 
+// Carrega na página os hamburgueres cadastrados no banco de dados
 window.onload = () => {
   fetch('funcoes.php?operacao=mostrarTudo')
   .then((respostaInicial) => {

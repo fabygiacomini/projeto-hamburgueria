@@ -32,6 +32,39 @@
       <input type="submit" value="Cadastrar" id="btn-cadastro">
     </form>
   </div>
+  <section>
+    <br>
+    <br>
+    <h2>Clientes Cadastrados</h2>
+    <div class="result">
+      <table>
+        <thead>
+          <tr>
+            <th>ID</th>
+            <th>Nome do Cliente</th>
+            <th>Endereço</th>
+            <th>Cidade</th>
+            <th>Telefone</th>
+            <th>E-mail</th>
+            <th>Senha</th>
+          </tr>
+        </thead>
+        <tbody id="tabelaClientes">
+  
+        </tbody>
+      </table>
+      <div id="sectionDelete"></div>
+        <form id="deletarCliente">
+          <label for="campoId" style="font-size: 14px;">Digite o ID do Cliente a ser deletado:
+            <input type="number" name="campoId" id="campoId">
+          </label>
+          <label for="btn-delete-cliente">
+            <input type="submit" name="btn-delete-cliente" id="btn-delete-cliente" value="Deletar Cliente">
+          </label>
+        </form>
+      </div>
+    </div>
+  </section>
   <script src="cadastroClientes.js"></script>
 </body>
 </html>
