@@ -34,7 +34,7 @@ window.onload = () => {
     const container = document.getElementById('content')
     container.innerHTML = htmlProdutos
 
-    adicionaAcaoBotaoPedir();
+    adicionaAcaoBotaoPedir(); // adiciona item escolhido no carrinho
   
   })
 }
@@ -113,7 +113,7 @@ function insereNovoPedido(carrinho, idCliente = 1) { // cliente exemplo criado m
     const idDoPedidoNovo = respostaConvertida.id_pedido;
 
 
-    localStorage.setItem('cliente_atual_id', idCliente);
+    localStorage.setItem('cliente_atual_id', idCliente);  // "mini bd do navegador" que guarda pares chave/valor
     localStorage.setItem('cliente_atual_pedido', idDoPedidoNovo);
     
     window.location = 'resumoPedido.html'

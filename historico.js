@@ -31,7 +31,7 @@ function listarPedidos() {  // histórico
 
 
 const btnFiltro = document.getElementById('filtrar')
-btnFiltro.addEventListener("click", () =>{
+btnFiltro.addEventListener("click", () => {
   listarPedidosPorData()
 })
 

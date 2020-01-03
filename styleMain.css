@@ -5,19 +5,19 @@ body {
   font-family: 'Roboto', sans-serif;
   font-size: 18px;
   background-color: rgb(59, 41, 18);
-  background: url("background.png") no-repeat; 
-  overflow: hidden;
-  background-size: cover;
+  background: url("background.png"); 
+  overflow-x: hidden;
+  height: auto;
+  /* background-size: cover; */
   clear: both;
   padding: 0px;
-  margin: 0px; 
-  background-attachment: fixed;
+  margin: 0px;
 
 }
 
 #logo {
   display: inline-block;
-  overflow: hidden;
+  overflow: auto;
   width: 100%;
   top: 0;
 }
