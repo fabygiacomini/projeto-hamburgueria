@@ -14,6 +14,7 @@ O sistema desenvolvido tem as seguintes funcionalidades:
 - realiza cadastro de clientes;
 - lista todos os clientes cadastrados (sem reload);
 - deleta clientes cadastrados (sem reload);
+- busca clientes por nome (inclui mensagem de cliente não encontrado);
 
 ## Tecnologias Utilizadas
 - JavaScript

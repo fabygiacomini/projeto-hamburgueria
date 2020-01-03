@@ -39,7 +39,8 @@ function recuperaPedidos() // historico
       JOIN
       itens i ON ped.id_pedido = i.id_pedido
       JOIN
-      produto p ON i.id_prod = p.id_prod;"
+      produto p ON i.id_prod = p.id_prod
+      ORDER BY id_pedido;"
   );
   $consulta->execute();
   return $consulta->fetchAll(PDO::FETCH_ASSOC);
@@ -192,7 +193,7 @@ function cadastrarNovoCliente($dadosDoForm)
 function recuperaClientes()
 {
   $conexao = criaConexao();
-  $consulta = $conexao->prepare("SELECT * FROM cliente");
+  $consulta = $conexao->prepare("SELECT * FROM cliente ORDER BY nome");
   $consulta->execute();
   return $consulta->fetchAll(PDO::FETCH_ASSOC);
 }
@@ -218,12 +219,22 @@ function deletarCliente ($idClienteADeletar)
   ]; 
 }
 
+/**
+ * Busca cliente por nome na tabela clientes
+ * @param string $nomeCliente nome do cliente inserido no formulário de busca
+ * @return array
+ */
+function buscarClientePorNome($nomeCliente)
+{ 
+  $conexao = criaConexao();
+  $consulta = $conexao->prepare("SELECT * FROM cliente WHERE nome LIKE \"%$nomeCliente%\";");
+  $consulta->execute();
+  return $consulta->fetchAll(PDO::FETCH_ASSOC);
+}
 
 
 $postJson = file_get_contents('php://input');
 $operacao = $_GET;
-$parametroDoCorpoDaUrl = $postJson; 
-
 
 // VERIFICACOES: verifica qual operacao foi passada pelo javascript através do parametro na URL
 // para definir o que vai fazer
@@ -275,5 +286,11 @@ if ($operacao['operacao'] == 'listarClientes') {
 if ($operacao['operacao'] == 'deletarCliente') {
   $idClienteADeletar = $_GET['id_cli'];
   $resultado = deletarCliente($idClienteADeletar);
+  echo json_encode($resultado);
+}
+
+if ($operacao['operacao'] == 'buscarClienteNome') {
+  $nomeCliente = $_GET['nomeCliente'];
+  $resultado = buscarClientePorNome($nomeCliente);
   echo json_encode($resultado);
 }

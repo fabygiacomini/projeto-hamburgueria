@@ -15,6 +15,10 @@ function acompanharPedido () {
   .then(resumoNaoFormatado => resumoNaoFormatado.json())
   .then((resumoFormatado) => {
 
+    if (resumoFormatado.length == 0) {
+      return;
+    }
+    
     let htmlTodosItensPedido = ''
     let tituloPedido = `
     <h3>Número do Pedido: ${resumoFormatado[0].id_pedido}</h3><br>
