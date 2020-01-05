@@ -169,6 +169,7 @@ function cadastrarNovoCliente($dadosDoForm)
 
     $cadastrarCliente = $conexao->prepare($sqlInsercaoDdeNovoCliente);
 
+    // parâmetros: placeholder, valor a ser substituído no placeholder e o tipo de dado (nesse caso string) - medida de segurança
     $cadastrarCliente->bindParam(':nome', $dadosDoForm['nome'], PDO::PARAM_STR);
     $cadastrarCliente->bindParam(':endereco', $dadosDoForm['endereco'], PDO::PARAM_STR);
     $cadastrarCliente->bindParam(':cidade', $dadosDoForm['cidade'], PDO::PARAM_STR);
@@ -227,7 +228,7 @@ function deletarCliente ($idClienteADeletar)
 function buscarClientePorNome($nomeCliente)
 { 
   $conexao = criaConexao();
-  $consulta = $conexao->prepare("SELECT * FROM cliente WHERE nome LIKE \"%$nomeCliente%\";");
+  $consulta = $conexao->prepare("SELECT * FROM cliente WHERE nome LIKE \"%$nomeCliente%\" ORDER BY nome;");
   $consulta->execute();
   return $consulta->fetchAll(PDO::FETCH_ASSOC);
 }

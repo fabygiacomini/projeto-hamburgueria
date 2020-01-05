@@ -119,8 +119,6 @@ function insereNovoPedido(carrinho, idCliente = 1) { // cliente exemplo criado m
     window.location = 'resumoPedido.html'
 
   })
-  .catch((erro) => {
-  })
 }
 
 

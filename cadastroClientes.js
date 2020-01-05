@@ -85,6 +85,14 @@ formBuscarPorNome.addEventListener('submit', function(event) {
   fetch('funcoes.php?operacao=buscarClienteNome&nomeCliente=' + nomeABuscar)
   .then((resposta) => resposta.json())
   .then((nomesEncontrados) => {
+    // se não houver cliente cadastrado com o nome buscado
+    if (nomesEncontrados.length == 0) {
+      alert('Nenhum cliente cadastrado com este nome!')
+      listarClientes()
+      document.getElementById('campoNome').value = ""
+      return;
+    }
+
     let listaDeClientes = ''
     nomesEncontrados.forEach((cliente) => {
       let cadaCliente = `
@@ -102,13 +110,6 @@ formBuscarPorNome.addEventListener('submit', function(event) {
 
     const containerClientes = document.getElementById('tabelaClientes')
     containerClientes.innerHTML = listaDeClientes;
-
-    // se não houver cliente cadastrado com o nome buscado
-    if (nomesEncontrados == '') {
-      alert('Nenhum cliente cadastrado com este nome!')
-      listarClientes()
-      document.getElementById('campoNome').value = "";
-    }
   })
 })
 
