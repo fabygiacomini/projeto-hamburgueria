@@ -1,7 +1,6 @@
 # Projeto Hamburgueria
 **Valbernielson's Hamburgueria**
 <br>
-Projeto realizado para o processo seletivo da Dsin Desenvolvimento e Soluções em Informática.<br>
 Por: Fabiana Giacomini Garcia.
 
 ## Funcionalidades
